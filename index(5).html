@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M.A Création – Impression 3D & Tricot Artisanal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root {
+  --ink: #0E0E0E;
+  --cream: #F7F3EE;
+  --gold: #C09A2E;
+  --gold-light: #E8C85A;
+  --warm: #2C2416;
+  --muted: #7A7060;
+  --border: #D9D2C5;
+  --card: #FDFAF6;
+  --dark: #1A1611;
+  --success: #3A8C5C;
+  --error: #C0392B;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.3s}
+nav.scrolled{background:rgba(14,14,14,.97);backdrop-filter:blur(12px)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;height:72px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--cream);letter-spacing:.04em;text-decoration:none}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:rgba(247,243,238,.75);text-decoration:none;font-size:.9rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-actions{display:flex;gap:1rem;align-items:center}
+.cart-btn{background:none;border:1.5px solid rgba(247,243,238,.3);color:var(--cream);padding:.5rem 1.2rem;border-radius:2px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.06em;transition:.2s;display:flex;align-items:center;gap:.5rem}
+.cart-btn:hover{border-color:var(--gold);color:var(--gold)}
+.cart-count{background:var(--gold);color:var(--dark);border-radius:50%;width:18px;height:18px;font-size:.7rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.5rem}
+.hamburger span{width:24px;height:2px;background:var(--cream);transition:.3s}
+@media(max-width:768px){
+  .nav-links{display:none;position:fixed;top:72px;left:0;right:0;background:#0e0e0e;flex-direction:column;padding:2rem;gap:1.5rem;align-items:center}
+  .nav-links.open{display:flex}
+  .hamburger{display:flex}
+}
+
+/* ── HERO ── */
+#hero{height:100vh;background:var(--dark);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(192,154,46,.12) 0%,transparent 70%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(247,243,238,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(247,243,238,.04) 1px,transparent 1px);background-size:60px 60px}
+.hero-content{position:relative;z-index:2;max-width:800px;padding:2rem;animation:fadeUp .8s ease both}
+.hero-badge{display:inline-block;border:1px solid rgba(192,154,46,.5);color:var(--gold);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;padding:.4rem 1.2rem;border-radius:2px;margin-bottom:2rem}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:600;color:var(--cream);line-height:1.1;margin-bottom:1.5rem}
+.hero-title em{font-style:italic;color:var(--gold)}
+.hero-sub{color:rgba(247,243,238,.6);font-size:1.1rem;font-weight:300;line-height:1.7;margin-bottom:3rem;max-width:520px;margin-left:auto;margin-right:auto}
+.hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--gold);color:var(--dark);border:none;padding:.85rem 2.2rem;font-family:'Jost',sans-serif;font-size:.9rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:.25s;text-decoration:none;display:inline-block}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-2px)}
+.btn-outline{background:none;color:var(--cream);border:1.5px solid rgba(247,243,238,.35);padding:.85rem 2.2rem;font-family:'Jost',sans-serif;font-size:.9rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:.25s;text-decoration:none;display:inline-block}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;color:rgba(247,243,238,.4);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollLine 2s ease-in-out infinite}
+@keyframes scrollLine{0%,100%{opacity:.3;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.2)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STATS ── */
+.stats-bar{background:var(--ink);padding:1.2rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap}
+.stat-item{display:flex;align-items:center;gap:.6rem;color:rgba(247,243,238,.7);font-size:.85rem;font-weight:400;letter-spacing:.05em}
+.stat-item svg{color:var(--gold)}
+
+/* ── SECTION ── */
+section{padding:6rem 2rem}
+.container{max-width:1200px;margin:0 auto}
+.section-header{text-align:center;margin-bottom:4rem}
+.section-label{display:inline-block;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:600}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:600;line-height:1.2;margin-bottom:1rem}
+.section-desc{color:var(--muted);max-width:520px;margin:0 auto;line-height:1.7;font-weight:300}
+
+/* ── SERVICES ── */
+#services{background:var(--dark)}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5px;background:rgba(192,154,46,.15)}
+.service-card{background:var(--dark);padding:3rem 2.5rem;transition:.3s;position:relative;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:.4s}
+.service-card:hover::before{transform:scaleX(1)}
+.service-card:hover{background:rgba(192,154,46,.05)}
+.service-icon{width:52px;height:52px;border:1.5px solid rgba(192,154,46,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;color:var(--gold);font-size:1.3rem}
+.service-card h3{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--cream);margin-bottom:.8rem;font-weight:600}
+.service-card p{color:rgba(247,243,238,.5);line-height:1.7;font-size:.9rem;font-weight:300}
+.service-price{margin-top:1.5rem;font-size:.8rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+
+/* ── HOW IT WORKS ── */
+#process{background:var(--cream)}
+.process-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;position:relative}
+.process-step{text-align:center;padding:2rem 1.5rem}
+.step-num{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:700;color:rgba(192,154,46,.2);line-height:1;margin-bottom:1rem;display:block}
+.step-title{font-weight:600;font-size:1rem;letter-spacing:.05em;margin-bottom:.6rem;text-transform:uppercase}
+.step-desc{color:var(--muted);font-size:.875rem;line-height:1.6;font-weight:300}
+
+/* ── CATALOGUE ── */
+#catalogue{background:#FAF7F3}
+.filter-bar{display:flex;gap:.75rem;justify-content:center;margin-bottom:3rem;flex-wrap:wrap}
+.filter-btn{background:none;border:1.5px solid var(--border);color:var(--muted);padding:.5rem 1.4rem;border-radius:2px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:.2s}
+.filter-btn.active,.filter-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(192,154,46,.06)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem}
+.product-card{background:var(--card);border:1px solid var(--border);border-radius:3px;overflow:hidden;transition:.3s;cursor:pointer}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.1)}
+.product-img{height:200px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden}
+.product-badge{position:absolute;top:10px;left:10px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px}
+.badge-new{background:var(--gold);color:var(--dark)}
+.badge-custom{background:var(--ink);color:var(--cream)}
+.badge-devis{background:rgba(58,140,92,.15);color:var(--success);border:1px solid rgba(58,140,92,.3)}
+.product-body{padding:1.4rem}
+.product-category{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.4rem}
+.product-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
+.product-desc{font-size:.85rem;color:var(--muted);line-height:1.5;margin-bottom:1rem;font-weight:300}
+.product-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--border)}
+.product-price{font-weight:600;font-size:1rem}
+.product-price.devis{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.btn-add{background:var(--ink);color:var(--cream);border:none;padding:.5rem 1rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:.2s}
+.btn-add:hover{background:var(--gold);color:var(--dark)}
+.btn-devis{background:none;color:var(--ink);border:1.5px solid var(--ink);padding:.5rem 1rem;font-family:'Jost',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:.2s}
+.btn-devis:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── SUR MESURE ── */
+#surmesure{background:var(--dark)}
+.surmesure-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+@media(max-width:768px){.surmesure-inner{grid-template-columns:1fr}}
+.surmesure-text h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);color:var(--cream);margin-bottom:1.5rem;font-weight:600;line-height:1.3}
+.surmesure-text p{color:rgba(247,243,238,.55);line-height:1.8;margin-bottom:1.5rem;font-size:.95rem;font-weight:300}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem}
+.feature-list li{display:flex;align-items:flex-start;gap:.75rem;color:rgba(247,243,238,.7);font-size:.9rem;font-weight:300}
+.feature-list li::before{content:'✦';color:var(--gold);font-size:.7rem;margin-top:.2rem;flex-shrink:0}
+.surmesure-form{background:rgba(247,243,238,.04);border:1px solid rgba(247,243,238,.1);border-radius:4px;padding:2.5rem}
+.form-title{font-family:'Playfair Display',serif;color:var(--cream);font-size:1.3rem;margin-bottom:1.5rem;font-weight:600}
+
+/* ── FAQ ── */
+#faq{background:var(--cream)}
+.faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:.75rem}
+.faq-item{border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.faq-q{padding:1.2rem 1.5rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:500;font-size:.95rem;transition:.2s;user-select:none}
+.faq-q:hover{background:rgba(192,154,46,.05)}
+.faq-q.open{color:var(--gold)}
+.faq-icon{font-size:1.2rem;color:var(--gold);transition:transform .3s;flex-shrink:0}
+.faq-q.open .faq-icon{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-a-inner{padding:.5rem 1.5rem 1.2rem;color:var(--muted);line-height:1.7;font-size:.9rem;font-weight:300}
+
+/* ── CONTACT ── */
+#contact{background:var(--ink)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:5rem;align-items:start}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr}}
+.contact-info h3{font-family:'Playfair Display',serif;color:var(--cream);font-size:1.5rem;margin-bottom:1rem;font-weight:600}
+.contact-info p{color:rgba(247,243,238,.5);line-height:1.7;font-size:.9rem;font-weight:300;margin-bottom:1.5rem}
+.contact-detail{display:flex;gap:.75rem;align-items:center;color:rgba(247,243,238,.7);font-size:.9rem;margin-bottom:.75rem}
+.contact-detail span:first-child{color:var(--gold)}
+
+/* ── FOOTER ── */
+footer{background:#080808;padding:3rem 2rem;text-align:center}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--cream);margin-bottom:.75rem;font-weight:700}
+.footer-logo span{color:var(--gold)}
+.footer-links{display:flex;gap:2rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap}
+.footer-links a{color:rgba(247,243,238,.4);font-size:.8rem;text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:.2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{color:rgba(247,243,238,.25);font-size:.78rem}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:1.2rem}
+.form-label{display:block;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.45rem;color:var(--muted)}
+.dark-form .form-label{color:rgba(247,243,238,.5)}
+.form-input,.form-select,.form-textarea{width:100%;background:rgba(247,243,238,.06);border:1.5px solid rgba(247,243,238,.12);border-radius:2px;padding:.7rem .95rem;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--cream);transition:.2s;outline:none}
+.light-form .form-input,.light-form .form-select,.light-form .form-textarea{background:#fff;border-color:var(--border);color:var(--ink)}
+.light-form .form-input::placeholder,.light-form .form-textarea::placeholder{color:var(--muted)}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(247,243,238,.3)}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);background:rgba(192,154,46,.06)}
+.light-form .form-input:focus,.light-form .form-select:focus,.light-form .form-textarea:focus{background:#fffdf9;border-color:var(--gold)}
+.form-select option{background:var(--dark);color:var(--cream)}
+.light-form .form-select option{background:#fff;color:var(--ink)}
+.form-textarea{resize:vertical;min-height:100px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+.file-drop{border:2px dashed rgba(192,154,46,.3);border-radius:3px;padding:2rem;text-align:center;cursor:pointer;transition:.2s;color:rgba(247,243,238,.4);font-size:.85rem}
+.file-drop:hover,.file-drop.dragover{border-color:var(--gold);background:rgba(192,154,46,.05);color:var(--gold)}
+.file-drop input{display:none}
+.file-drop .file-icon{font-size:1.8rem;margin-bottom:.5rem}
+.file-name{font-size:.8rem;color:var(--gold);margin-top:.5rem}
+.payment-options{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:.5rem}
+.payment-option{border:1.5px solid rgba(247,243,238,.15);border-radius:3px;padding:.75rem .5rem;text-align:center;cursor:pointer;transition:.2s;position:relative}
+.light-form .payment-option{border-color:var(--border)}
+.payment-option.selected{border-color:var(--gold);background:rgba(192,154,46,.08)}
+.payment-option input{position:absolute;opacity:0;width:0;height:0}
+.payment-icon{font-size:1.3rem;display:block;margin-bottom:.3rem}
+.payment-label{font-size:.78rem;font-weight:600;letter-spacing:.05em;color:rgba(247,243,238,.7)}
+.light-form .payment-label{color:var(--muted)}
+.payment-option.selected .payment-label{color:var(--gold)}
+.form-hint{font-size:.75rem;color:rgba(247,243,238,.35);margin-top:.35rem;font-style:italic}
+.light-form .form-hint{color:var(--muted)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;backdrop-filter:blur(4px);animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:#fff;border-radius:4px;width:100%;max-width:680px;overflow:hidden;animation:slideUp .3s ease;margin:auto}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{background:var(--ink);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Playfair Display',serif;color:var(--cream);font-size:1.2rem;font-weight:600}
+.modal-close{background:none;border:none;color:rgba(247,243,238,.5);font-size:1.5rem;cursor:pointer;line-height:1;padding:.2rem;transition:.2s}
+.modal-close:hover{color:var(--cream)}
+.modal-body{padding:2rem}
+.modal-footer{padding:1.2rem 2rem;border-top:1px solid var(--border);display:flex;gap:1rem;justify-content:flex-end;align-items:center;background:#fdfaf6}
+.btn-sm{padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;font-family:'Jost',sans-serif;border-radius:2px;transition:.2s}
+.btn-gold{background:var(--gold);color:var(--dark)}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-ghost{background:none;color:var(--muted);border:1.5px solid var(--border)}
+.btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#2d7a4f}
+.step-indicator{display:flex;gap:0;margin-bottom:2rem;border:1px solid var(--border);border-radius:2px;overflow:hidden}
+.step-ind-item{flex:1;text-align:center;padding:.6rem;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:#fff;border-right:1px solid var(--border);transition:.2s}
+.step-ind-item:last-child{border-right:none}
+.step-ind-item.active{background:var(--ink);color:var(--gold)}
+.step-ind-item.done{background:rgba(58,140,92,.08);color:var(--success)}
+.cart-item-row{display:flex;align-items:center;gap:1rem;padding:.85rem;border:1px solid var(--border);border-radius:3px;margin-bottom:.6rem}
+.cart-item-icon{font-size:1.8rem;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:#f5f2ed;border-radius:3px}
+.cart-item-info{flex:1}
+.cart-item-name{font-weight:500;font-size:.9rem}
+.cart-item-sub{font-size:.78rem;color:var(--muted)}
+.cart-item-price{font-weight:600;font-size:.95rem;color:var(--gold)}
+.cart-item-remove{background:none;border:none;color:rgba(0,0,0,.25);cursor:pointer;font-size:1.1rem;transition:.2s;padding:.2rem}
+.cart-item-remove:hover{color:var(--error)}
+.cart-item-qty{display:flex;align-items:center;gap:.5rem;font-size:.85rem}
+.qty-btn{background:var(--border);border:none;width:22px;height:22px;border-radius:2px;cursor:pointer;font-size:.9rem;transition:.2s;display:flex;align-items:center;justify-content:center}
+.qty-btn:hover{background:var(--gold);color:var(--dark)}
+.order-total{display:flex;justify-content:space-between;align-items:center;padding:1rem 1rem .5rem;border-top:2px solid var(--ink);margin-top:.5rem}
+.order-total-label{font-weight:600;font-size:1rem;text-transform:uppercase;letter-spacing:.06em}
+.order-total-amount{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--gold)}
+.section-divider{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1.5rem 0 1rem;display:flex;align-items:center;gap:.75rem}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── CONFIRMATION ── */
+.confirm-header{text-align:center;padding:2rem 0 1rem}
+.confirm-check{width:56px;height:56px;background:rgba(58,140,92,.12);border:2px solid var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 1rem}
+.confirm-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:600;margin-bottom:.4rem}
+.confirm-ref{font-size:.8rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase}
+.confirm-ref span{color:var(--gold);font-weight:700}
+.confirm-details{background:#f9f6f2;border:1px solid var(--border);border-radius:3px;padding:1.2rem 1.5rem;margin:1.5rem 0}
+.confirm-row{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;font-size:.88rem}
+.confirm-row:not(:last-child){border-bottom:1px solid var(--border)}
+.confirm-row-label{color:var(--muted)}
+.confirm-row-val{font-weight:500}
+.payment-info-box{border-left:3px solid var(--gold);background:rgba(192,154,46,.06);padding:1rem 1.2rem;border-radius:0 3px 3px 0;margin:1rem 0}
+.payment-info-box h4{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.payment-info-box p{font-size:.85rem;color:var(--muted);line-height:1.6;font-weight:300}
+.payment-info-box strong{color:var(--ink);font-weight:600}
+#qr-container{display:flex;justify-content:center;margin:1rem 0}
+#qr-container canvas{border:4px solid #fff;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.12)}
+
+/* ── NOTIFICATIONS ── */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--ink);color:var(--cream);padding:1rem 1.5rem;border-radius:3px;font-size:.9rem;z-index:2000;animation:slideInRight .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.3);max-width:320px}
+.toast.success{border-left:3px solid var(--success)}
+.toast.error{border-left:3px solid var(--error)}
+@keyframes slideInRight{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:translateX(0)}}
+
+/* ── CONFIG PANEL ── */
+.config-notice{background:rgba(192,154,46,.1);border:1.5px dashed rgba(192,154,46,.4);border-radius:4px;padding:1rem 1.5rem;margin-bottom:1.5rem;font-size:.82rem;color:#6b5a1e;line-height:1.6}
+.config-notice strong{font-weight:700;color:#8a720a}
+
+/* ── LOADING ── */
+.spinner{width:20px;height:20px;border:2px solid rgba(192,154,46,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-loading{opacity:.7;pointer-events:none;display:flex;align-items:center;gap:.5rem;justify-content:center}
+
+
+/* ── PRODUCT MODAL ── */
+.product-modal-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:5rem;background:var(--dark);border-radius:3px 3px 0 0}
+.product-modal-body{padding:1.5rem}
+.product-option-group{margin-bottom:1.2rem}
+.option-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;display:block}
+.color-swatches{display:flex;flex-wrap:wrap;gap:.5rem}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.2s;position:relative}
+.color-swatch.selected{border-color:var(--gold);transform:scale(1.15)}
+.color-swatch-label{font-size:.72rem;text-align:center;color:var(--muted);margin-top:.2rem;width:28px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.color-swatch-wrap{display:flex;flex-direction:column;align-items:center}
+.size-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.size-btn{border:1.5px solid var(--border);background:#fff;color:var(--ink);padding:.4rem .9rem;font-size:.82rem;font-weight:600;border-radius:2px;cursor:pointer;transition:.2s;font-family:'Jost',sans-serif}
+.size-btn:hover{border-color:var(--ink)}
+.size-btn.selected{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.mesures-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.6rem}
+.mesure-field label{font-size:.72rem;color:var(--muted);display:block;margin-bottom:.25rem}
+.material-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.material-btn{border:1.5px solid var(--border);background:#fff;color:var(--ink);padding:.4rem 1rem;font-size:.82rem;font-weight:500;border-radius:2px;cursor:pointer;transition:.2s;font-family:'Jost',sans-serif}
+.material-btn:hover{border-color:var(--ink)}
+.material-btn.selected{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.mesures-toggle{font-size:.78rem;color:var(--gold);cursor:pointer;text-decoration:underline;margin-top:.3rem;display:inline-block}
+.qty-control{display:flex;align-items:center;gap:.75rem}
+.qty-control .qty-btn{width:30px;height:30px;font-size:1rem}
+.qty-control .qty-val{font-size:1rem;font-weight:600;min-width:20px;text-align:center}
+
+/* ── HIDDEN ── */
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="logo">M.A<span>.</span>Création</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#catalogue" onclick="closeMenu()">Catalogue</a></li>
+      <li><a href="#surmesure" onclick="closeMenu()">Sur Mesure</a></li>
+      <li><a href="#process" onclick="closeMenu()">Comment ça marche</a></li>
+      <li><a href="#faq" onclick="closeMenu()">FAQ</a></li>
+      <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="openModal('cart')">
+        🛒 Panier <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <div class="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Suisse · Artisanal · Sur Mesure</div>
+    <h1 class="hero-title">L'Art de Créer,<br><em>Rien que pour vous.</em></h1>
+    <p class="hero-sub">Impression 3D professionnelle, tricot artisanal et créations personnalisées. Chaque pièce est fabriquée avec soin, selon vos envies.</p>
+    <div class="hero-ctas">
+      <a href="#catalogue" class="btn-primary">Voir le Catalogue</a>
+      <button class="btn-outline" onclick="openModal('devis')">Demander un Devis</button>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div>Défiler</div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>Livraison rapide en Suisse</div>
+  <div class="stat-item"><svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm3.354 5.646-4.5 4.5a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L6.5 9.086l4.146-4.147a.5.5 0 0 1 .708.708z"/></svg>Qualité garantie</div>
+  <div class="stat-item"><svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5zm1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0zM1.5 4h13a.5.5 0 0 1 .5.5v1.608l-6.5 1.735-6.5-1.735V4.5a.5.5 0 0 1 .5-.5z"/></svg>Devis gratuit sous 24h</div>
+  <div class="stat-item"><svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696 2.186-4.42c.197-.4.73-.4.927 0l2.186 4.42 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>★ 5/5 – Clients satisfaits</div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Nos Services</span>
+      <h2 class="section-title" style="color:var(--cream)">Ce que nous créons pour vous</h2>
+      <p class="section-desc" style="color:rgba(247,243,238,.5)">De la conception à la réalisation, chaque projet est unique.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🖨️</div>
+        <h3>Impression 3D</h3>
+        <p>Figurines, pièces techniques, décorations, prototypes, gadgets. Matières PLA, PETG, ABS. Fichier STL fourni ou création sur demande.</p>
+        <div class="service-price">Dès CHF 8 / pièce</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🧶</div>
+        <h3>Tricot Artisanal</h3>
+        <p>Bonnets, écharpes, pulls, chaussettes, snood. Laines naturelles ou techniques. Taille et couleur au choix.</p>
+        <div class="service-price">Dès CHF 35 / pièce</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">✨</div>
+        <h3>Sur Mesure</h3>
+        <p>Vous avez un projet unique ? Avec ou sans fichier. Nous concevons et réalisons selon vos spécifications exactes.</p>
+        <div class="service-price">Devis gratuit</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🎁</div>
+        <h3>Cadeaux &amp; Événements</h3>
+        <p>Cadeaux personnalisés, décorations de fête, lots pour entreprises. Commandes en série possibles.</p>
+        <div class="service-price">Sur devis</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Comment ça marche</span>
+      <h2 class="section-title">Simple comme bonjour</h2>
+      <p class="section-desc">De votre idée à votre porte en quelques étapes.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step">
+        <span class="step-num">01</span>
+        <div class="step-title">Commande / Devis</div>
+        <p class="step-desc">Choisissez dans le catalogue ou décrivez votre projet sur mesure. Fichier STL optionnel.</p>
+      </div>
+      <div class="process-step">
+        <span class="step-num">02</span>
+        <div class="step-title">Confirmation</div>
+        <p class="step-desc">Vous recevez un devis ou une confirmation par email avec votre numéro de commande.</p>
+      </div>
+      <div class="process-step">
+        <span class="step-num">03</span>
+        <div class="step-title">Création</div>
+        <p class="step-desc">Fabrication soignée. Délai estimé communiqué lors de la confirmation.</p>
+      </div>
+      <div class="process-step">
+        <span class="step-num">04</span>
+        <div class="step-title">Livraison &amp; Paiement</div>
+        <p class="step-desc">Envoi postal, remise en main propre. Paiement par Cash, Twint ou virement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATALOGUE -->
+<section id="catalogue">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Catalogue</span>
+      <h2 class="section-title">Nos créations</h2>
+      <p class="section-desc">Produits standards ou entièrement personnalisables.</p>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterProducts('all',this)">Tout</button>
+      <button class="filter-btn" onclick="filterProducts('3d',this)">Impression 3D</button>
+      <button class="filter-btn" onclick="filterProducts('tricot',this)">Tricot</button>
+      <button class="filter-btn" onclick="filterProducts('surmesure',this)">Sur Mesure</button>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</section>
+
+<!-- SUR MESURE -->
+<section id="surmesure">
+  <div class="container">
+    <div class="surmesure-inner">
+      <div class="surmesure-text">
+        <span class="section-label">Sur Mesure</span>
+        <h2>Votre idée,<br><em style="color:var(--gold);font-style:italic">notre savoir-faire.</em></h2>
+        <p>Vous avez un projet unique ? Que vous ayez un fichier 3D prêt ou juste une idée en tête, nous sommes là pour vous.</p>
+        <ul class="feature-list">
+          <li>Impression avec votre fichier STL/OBJ/3MF</li>
+          <li>Modélisation 3D sur demande (+CHF 20–80)</li>
+          <li>Choix de la matière: PLA, PETG, ABS, TPU, bois</li>
+          <li>Tricot sur vos mesures exactes</li>
+          <li>Coloris et finitions personnalisés</li>
+          <li>Quantités en série (rabais dès 5 pièces)</li>
+          <li>Délais et prix communiqués avant production</li>
+        </ul>
+        <button class="btn-primary" onclick="openModal('devis')">Demander un devis gratuit</button>
+      </div>
+      <div class="surmesure-form dark-form">
+        <h3 class="form-title">Commande rapide</h3>
+        <div class="form-group">
+          <label class="form-label">Votre prénom *</label>
+          <input class="form-input" id="smNom" placeholder="Marie" type="text">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" id="smEmail" placeholder="marie@email.ch" type="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type de projet</label>
+          <select class="form-select" id="smType">
+            <option value="">– Choisir –</option>
+            <option>Impression 3D – fichier fourni</option>
+            <option>Impression 3D – modélisation nécessaire</option>
+            <option>Tricot sur mesure</option>
+            <option>Autre / combo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description de votre projet *</label>
+          <textarea class="form-textarea" id="smDesc" placeholder="Décrivez votre projet en détail..."></textarea>
+        </div>
+        <div class="form-group">
+          <div class="file-drop" onclick="document.getElementById('smFile').click()" id="smDropZone">
+            <div class="file-icon">📎</div>
+            <div>Joindre un fichier (STL, image, PDF)</div>
+            <div style="font-size:.75rem;margin-top:.3rem;opacity:.6">Optionnel · max 10MB</div>
+            <input type="file" id="smFile" accept=".stl,.obj,.3mf,.pdf,.png,.jpg,.jpeg" onchange="handleFileSelect(this,'smDropZone','smFileName')">
+            <div class="file-name hidden" id="smFileName"></div>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%" onclick="submitQuickDevis()">Envoyer ma demande →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title">Questions fréquentes</h2>
+    </div>
+    <div class="faq-list" id="faqList"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Contact</span>
+      <h2 class="section-title" style="color:var(--cream)">Parlons de votre projet</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>M.A Création</h3>
+        <p>Artisan suisse passionné par la fabrication numérique et le tricot. Chaque commande est traitée personnellement.</p>
+        <div class="contact-detail"><span>✉</span><span id="contactEmail">votre@email.com</span></div>
+        <div class="contact-detail"><span>📱</span><span id="contactTwint">+41 XX XXX XX XX</span></div>
+        <div class="contact-detail"><span>⏱</span><span>Réponse sous 24h</span></div>
+        <div class="contact-detail"><span>🇨🇭</span><span>Suisse</span></div>
+        <br>
+        <div style="padding:1rem;background:rgba(192,154,46,.1);border-left:3px solid var(--gold);border-radius:0 3px 3px 0;margin-top:1rem">
+          <p style="color:rgba(247,243,238,.6);font-size:.82rem">💡 <strong style="color:var(--gold)">Astuce :</strong> Pour les projets urgents, mentionnez votre délai dans le formulaire.</p>
+        </div>
+      </div>
+      <div class="light-form">
+        <div class="form-group">
+          <label class="form-label" style="color:rgba(247,243,238,.6)">Votre nom *</label>
+          <input class="form-input" id="ctNom" placeholder="Prénom Nom" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:var(--cream)">
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="color:rgba(247,243,238,.6)">Email *</label>
+          <input class="form-input" id="ctEmail" placeholder="email@exemple.ch" type="email" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:var(--cream)">
+        </div>
+        <div class="form-group">
+          <label class="form-label" style="color:rgba(247,243,238,.6)">Message *</label>
+          <textarea class="form-textarea" id="ctMsg" rows="5" placeholder="Votre message..." style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:var(--cream)"></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%" onclick="sendContactForm()">Envoyer le message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">M.A<span>.</span>Création</div>
+    <p style="color:rgba(247,243,238,.35);font-size:.82rem;margin-bottom:1.5rem">Impression 3D · Tricot Artisanal · Sur Mesure · Suisse</p>
+    <div class="footer-links">
+      <a href="#catalogue">Catalogue</a>
+      <a href="#surmesure">Sur Mesure</a>
+      <a href="#process">Comment ça marche</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-copy">© 2025 M.A Création – Tous droits réservés</div>
+  </div>
+</footer>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay hidden" id="productModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <span class="modal-title" id="productModalTitle">Produit</span>
+      <button class="modal-close" onclick="closeModal('productModal')">×</button>
+    </div>
+    <div class="modal-body" id="productModalBody"></div>
+    <div class="modal-footer" id="productModalFooter"></div>
+  </div>
+</div>
+
+<!-- CART/ORDER MODAL -->
+<div class="modal-overlay hidden" id="cartModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="cartModalTitle">Mon Panier</span>
+      <button class="modal-close" onclick="closeModal('cartModal')">×</button>
+    </div>
+    <div class="modal-body" id="cartModalBody"></div>
+    <div class="modal-footer" id="cartModalFooter"></div>
+  </div>
+</div>
+
+<!-- DEVIS MODAL -->
+<div class="modal-overlay hidden" id="devisModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Demande de Devis</span>
+      <button class="modal-close" onclick="closeModal('devisModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="config-notice hidden" id="emailSetupNotice">
+        ⚙️ <strong>Configuration requise :</strong> Ouvrez le fichier et remplissez la section <code>CONFIG</code> avec votre email, Twint et identifiants EmailJS.
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Prénom *</label>
+          <input class="form-input light-input" id="dvPrenom" placeholder="Marie" style="background:#fff;border-color:var(--border);color:var(--ink)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom *</label>
+          <input class="form-input" id="dvNom" placeholder="Dupont" style="background:#fff;border-color:var(--border);color:var(--ink)">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input class="form-input" id="dvEmail" type="email" placeholder="marie@email.ch" style="background:#fff;border-color:var(--border);color:var(--ink)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Téléphone</label>
+          <input class="form-input" id="dvTel" placeholder="+41 79 000 00 00" style="background:#fff;border-color:var(--border);color:var(--ink)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type de projet *</label>
+        <select class="form-select" id="dvType" style="background:#fff;border-color:var(--border);color:var(--ink)">
+          <option value="">– Sélectionnez –</option>
+          <option>Impression 3D – avec mon fichier STL/OBJ</option>
+          <option>Impression 3D – sans fichier (modélisation incluse)</option>
+          <option>Tricot sur mesure</option>
+          <option>Cadeau / lot entreprise</option>
+          <option>Décoration événement</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Matière / couleur souhaitée</label>
+        <input class="form-input" id="dvMatiere" placeholder="Ex: PLA blanc mat, laine rouge bordeaux…" style="background:#fff;border-color:var(--border);color:var(--ink)">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Quantité</label>
+          <input class="form-input" id="dvQty" type="number" min="1" value="1" style="background:#fff;border-color:var(--border);color:var(--ink)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Délai souhaité</label>
+          <select class="form-select" id="dvDelai" style="background:#fff;border-color:var(--border);color:var(--ink)">
+            <option>Pas urgent</option>
+            <option>Sous 2 semaines</option>
+            <option>Sous 1 semaine</option>
+            <option>Urgent (supplément possible)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description détaillée *</label>
+        <textarea class="form-textarea" id="dvDesc" rows="4" placeholder="Décrivez votre projet en détail : dimensions, usage, références visuelles…" style="background:#fff;border-color:var(--border);color:var(--ink)"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Joindre un fichier</label>
+        <div class="file-drop" style="border-color:rgba(192,154,46,.4);color:var(--muted)" onclick="document.getElementById('dvFile').click()" id="dvDropZone">
+          <div class="file-icon">📎</div>
+          <div>STL / OBJ / 3MF / Image / PDF</div>
+          <div style="font-size:.75rem;margin-top:.3rem">Optionnel · max 10MB</div>
+          <input type="file" id="dvFile" accept=".stl,.obj,.3mf,.pdf,.png,.jpg,.jpeg" onchange="handleFileSelect(this,'dvDropZone','dvFileName')">
+          <div class="file-name hidden" id="dvFileName"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-ghost" onclick="closeModal('devisModal')">Annuler</button>
+      <button class="btn-sm btn-gold" id="dvSubmitBtn" onclick="submitDevis()">Envoyer la demande →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRMATION MODAL -->
+<div class="modal-overlay hidden" id="confirmModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Confirmation de commande</span>
+      <button class="modal-close" onclick="closeModal('confirmModal')">×</button>
+    </div>
+    <div class="modal-body" id="confirmBody"></div>
+    <div class="modal-footer" id="confirmFooter"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  ⚙️  CONFIGURATION
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  shopName:    "M.A Creation",
+  ownerEmail:  "Maxime211103@gmail.com",
+  twintPhone:  "+41793678726",
+  iban:        "CH59 8080 8007 7507 8850 4",
+  ownerName:   "Maxime Genoud",
+  emailjs: {
+    publicKey:     "lGyuhGPCmInYhkVhv",
+    serviceId:     "service_vkaf2kb",
+    templateOwner: "template_15onnwa",
+    templateClient:"template_njpef3j"
+  },
+  tva: 0,
+  tvaLabel: "8.1%"
+};
+
+// ── PRODUCTS ──
+const PRODUCTS = [
+  // Impression 3D
+  { id:1,  cat:'3d',       img:'https://images.unsplash.com/photo-1609619385002-f40f1df9b7eb?w=400&h=300&fit=crop&q=80', name:'Figurine Personnalisee',  desc:'Impression 3D figurine jusqu\'a 15cm. Fichier STL fourni ou creation possible.',         price:28,  unit:'piece', icon:'🗿', colors:['Blanc','Noir','Rouge','Bleu','Vert','Jaune','Orange','Rose','Gris'], materials:['PLA','PETG'],      sizeType:null,      badge:'custom' },
+  { id:2,  cat:'3d',       img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&q=80', name:'Porte-Cles Personnalise', desc:'Porte-cles imprime 3D avec votre texte ou logo. Resistant et leger.',                     price:12,  unit:'piece', icon:'🔑', colors:['Blanc','Noir','Rouge','Bleu','Vert','Jaune'],               materials:['PLA'],             sizeType:null,      badge:'new'    },
+  { id:3,  cat:'3d',       img:'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=400&h=300&fit=crop&q=80', name:'Piece de Remplacement',   desc:'Reproduction d\'une piece cassee ou introuvable. Dimensions sur mesure.',                  price:null,unit:'devis', icon:'⚙️', colors:[],                                                           materials:['PLA','PETG','ABS','TPU'], sizeType:null, badge:'devis'  },
+  { id:4,  cat:'3d',       img:'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=400&h=300&fit=crop&q=80', name:'Vase / Pot Decoratif',    desc:'Vase imprime 3D en differentes formes. Hauteur 10-25cm.',                                  price:32,  unit:'piece', icon:'🏺', colors:['Blanc','Noir','Or mat','Terracotta'],                       materials:['PLA','Bois PLA'],  sizeType:null,      badge:null     },
+  { id:5,  cat:'3d',       img:'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop&q=80', name:'Badge / Pins',            desc:'Badge ou pins personnalise avec votre design. Lot des 5 pieces.',                          price:8,   unit:'piece', icon:'📌', colors:['Blanc','Noir','Or','Argent'],                               materials:['PLA'],             sizeType:null,      badge:null     },
+  { id:6,  cat:'3d',       img:'https://images.unsplash.com/photo-1563203369-b60ba56e9a7a?w=400&h=300&fit=crop&q=80', name:'Prototype / Modele',      desc:'Realisation de prototypes techniques ou d\'architecture. Devis selon complexite.',         price:null,unit:'devis', icon:'🔬', colors:[],                                                           materials:['PLA','PETG','ABS'],sizeType:null,      badge:'devis'  },
+  // Tricot
+  { id:7,  cat:'tricot',   img:'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=400&h=300&fit=crop&q=80', name:'Bonnet Adulte',           desc:'Bonnet tricote main. Laine merinos ou acrylique. Taille ajustable.',                       price:48,  unit:'piece', icon:'🎩', colors:['Naturel','Noir','Rouge','Bleu marine','Bordeaux','Gris chine'], materials:['Merinos','Acrylique'], sizeType:'bonnet', badge:null  },
+  { id:8,  cat:'tricot',   img:'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop&q=80', name:'Bonnet Enfant',           desc:'Bonnet douillet pour enfants 2-10 ans. Laine douce hypoallergenique.',                     price:36,  unit:'piece', icon:'👶', colors:['Rose','Bleu','Jaune','Vert','Blanc','Violet'],              materials:['Acrylique doux'], sizeType:'bonnet',  badge:'new'    },
+  { id:9,  cat:'tricot',   img:'https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?w=400&h=300&fit=crop&q=80', name:'Echarpe Longue',          desc:'Echarpe 160x22cm. Point mousse ou cotes. Personnalisable en couleur et matiere.',          price:78,  unit:'piece', icon:'🧣', colors:['Camel','Gris','Bordeaux','Bleu','Vert foret','Creme'],      materials:['Laine','Alpaga'],  sizeType:null,      badge:null     },
+  { id:10, cat:'tricot',   img:'https://images.unsplash.com/photo-1605464315542-bda3e2f4e605?w=400&h=300&fit=crop&q=80', name:'Snood / Col',             desc:'Snood chaud tricote en rond. Taille adulte ou enfant au choix.',                           price:52,  unit:'piece', icon:'🌀', colors:['Noir','Gris','Bordeaux','Bleu navy'],                       materials:['Merinos','Acrylique'], sizeType:'snood', badge:null  },
+  { id:11, cat:'tricot',   img:'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&h=300&fit=crop&q=80', name:'Chaussettes (paire)',     desc:'Chaussettes tricotees sur mesure. Laine technique anti-odeur. Pointure au choix.',         price:58,  unit:'paire', icon:'🧦', colors:['Naturel','Gris','Bordeaux','Rayures'],                      materials:['Laine'],           sizeType:'pointure',badge:null     },
+  { id:12, cat:'tricot',   img:'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=300&fit=crop&q=80', name:'Pull / Gilet Sur Mesure', desc:'Pull ou gilet tricote selon vos mensurations exactes et vos envies. Devis selon modele.',  price:null,unit:'devis', icon:'🧥', colors:['Naturel','Blanc','Noir','Bleu marine','Bordeaux','Gris'],  materials:['Merinos','Cachemire','Acrylique'], sizeType:'vetement', badge:'devis' },
+  // Sur mesure
+  { id:13, cat:'surmesure',img:'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&h=300&fit=crop&q=80', name:'Cadeau Entreprise',       desc:'Lots de cadeaux personnalises pour vos collaborateurs ou clients.',                        price:null,unit:'devis', icon:'🎁', colors:[], materials:[], sizeType:null, badge:'devis' },
+  { id:14, cat:'surmesure',img:'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400&h=300&fit=crop&q=80', name:'Decoration Evenement',    desc:'Decorations sur mesure pour mariages, anniversaires, fetes.',                              price:null,unit:'devis', icon:'🎊', colors:[], materials:[], sizeType:null, badge:'devis' },
+  { id:15, cat:'surmesure',img:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop&q=80', name:'Votre Projet Unique',     desc:'Une idee originale ? Partagez-la et nous trouverons la meilleure solution ensemble.',      price:null,unit:'devis', icon:'💡', colors:[], materials:[], sizeType:null, badge:'devis' },
+];
+
+const FAQS = [
+  { q:"Comment fonctionne la commande sur mesure ?", a:"Remplissez le formulaire de devis en decrivant votre projet. Si vous avez un fichier 3D (STL, OBJ...), joignez-le. Nous vous repondons sous 24h avec un devis et un delai." },
+  { q:"Quels formats de fichier 3D acceptez-vous ?", a:"STL, OBJ, 3MF, STEP. Pour les images de reference: PNG, JPG, PDF. Si vous n'avez pas de fichier, nous pouvons modeliser votre piece (supplement selon complexite)." },
+  { q:"Comment puis-je payer ?", a:"Cash (remise en main propre), Twint (QR code fourni dans la confirmation), ou virement bancaire (IBAN fourni). Aucun paiement en avance requis pour un devis." },
+  { q:"Quels sont les delais de livraison ?", a:"Commandes standards: 3-7 jours. Sur mesure: 5-14 jours selon la complexite. Livraison postale (Post CH) ou remise en main propre. Delai communique lors de la confirmation." },
+  { q:"Puis-je annuler ou modifier ma commande ?", a:"Oui, avant le debut de la production (dans les 24h suivant la confirmation). Passe ce delai, des frais peuvent s'appliquer si la production a demarre." },
+  { q:"Les laines sont-elles naturelles ?", a:"Nous utilisons selon votre preference: laine merinos (naturelle, douce), alpaga (luxe), acrylique (entretien facile, vegan) ou cachemire (sur commande)." },
+  { q:"Est-il possible de commander en grande quantite ?", a:"Oui ! Des rabais sont appliques des 5 pieces identiques. Contactez-nous pour un devis groupe ou entreprise." },
+  { q:"Livrez-vous a l'etranger ?", a:"Principalement en Suisse. Livraison France/Allemagne/Autriche possible sur demande. Frais de port communiques lors du devis." },
+];
+
+// ── STATE ──
+let cart = [];
+let currentStep = 1;
+let orderData = {};
+let lastConfirmation = null;
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  emailjs.init(CONFIG.emailjs.publicKey);
+  document.getElementById('contactEmail').textContent = CONFIG.ownerEmail;
+  document.getElementById('contactTwint').textContent = CONFIG.twintPhone;
+  renderProducts('all');
+  renderFAQ();
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+  if(window.scrollY > 50) document.getElementById('navbar').classList.add('scrolled');
+});
+
+// ── NAV ──
+function toggleMenu(){ document.getElementById('navLinks').classList.toggle('open'); }
+function closeMenu(){ document.getElementById('navLinks').classList.remove('open'); }
+
+// ── PRODUCTS ──
+function renderProducts(filter){
+  const grid = document.getElementById('productsGrid');
+  const items = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p=>p.cat===filter);
+  grid.innerHTML = items.map(p => `
+    <div class="product-card" data-id="${p.id}">
+      <div class="product-img" style="background:${p.cat==='3d'?'#1a1611':p.cat==='tricot'?'#1a1118':'#111a16'};padding:0;overflow:hidden;position:relative">
+        ${p.badge?`<span class="product-badge badge-${p.badge}" style="position:absolute;top:.6rem;left:.6rem;z-index:2">${p.badge==='new'?'Nouveau':p.badge==='custom'?'Perso':'Sur devis'}</span>`:''}
+        ${p.img
+          ? `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:.4s" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+          : ''}
+        <span style="font-size:3.5rem;${p.img?'display:none;':'display:flex;'}width:100%;height:100%;align-items:center;justify-content:center">${p.icon}</span>
+      </div>
+      <div class="product-body">
+        <div class="product-category">${p.cat==='3d'?'Impression 3D':p.cat==='tricot'?'Tricot':'Sur Mesure'}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+        <div class="product-footer">
+          <div class="product-price ${p.price===null?'devis':''}">${p.price!==null?'CHF '+p.price+' / '+p.unit:'Sur devis'}</div>
+          ${p.price!==null
+            ? `<button class="btn-add" onclick="openProductModal(${p.id})">Voir + Choisir</button>`
+            : `<button class="btn-devis" onclick="openDevisForProduct(${p.id})">Devis &rarr;</button>`
+          }
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProducts(filter, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(filter);
+}
+
+// ── FAQ ──
+function renderFAQ(){
+  const list = document.getElementById('faqList');
+  list.innerHTML = FAQS.map((f,i)=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(${i},this)">
+        <span>${f.q}</span>
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a" id="faq-${i}">
+        <div class="faq-a-inner">${f.a}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleFAQ(i, el){
+  const ans = document.getElementById('faq-'+i);
+  const open = el.classList.toggle('open');
+  ans.style.maxHeight = open ? ans.scrollHeight+'px' : '0';
+}
+
+// ── PRODUCT MODAL ──
+const COLOR_MAP = {
+  'Blanc':'#F5F5F5','Noir':'#1a1a1a','Rouge':'#C0392B','Bleu':'#2980B9','Vert':'#27AE60',
+  'Jaune':'#F1C40F','Orange':'#E67E22','Rose':'#E91E8C','Gris':'#7F8C8D','Or mat':'#C09A2E',
+  'Argent':'#95A5A6','Terracotta':'#C1694F','Naturel':'#D4B896','Bleu marine':'#1B3A6B',
+  'Bordeaux':'#7B1C35','Gris chine':'#9E9E9E','Camel':'#C19A6B','Bleu navy':'#1B3A6B',
+  'Vert foret':'#2D5A27','Creme':'#FFFDD0','Violet':'#8E44AD','Or':'#FFD700',
+  'Rayures':'linear-gradient(45deg,#333 25%,#fff 25%,#fff 50%,#333 50%,#333 75%,#fff 75%)'
+};
+
+let currentProductConfig = {};
+
+function openProductModal(productId){
+  const p = PRODUCTS.find(x=>x.id===productId);
+  if(!p) return;
+  currentProductConfig = {
+    id: p.id,
+    qty: 1,
+    color: '',
+    material: p.materials.length===1 ? p.materials[0] : '',
+    size: '',
+    mesures: {},
+    note: ''
+  };
+  document.getElementById('productModalTitle').textContent = p.name;
+  renderProductModal(p);
+  document.getElementById('productModal').classList.remove('hidden');
+}
+
+function renderProductModal(p){
+  const cfg = currentProductConfig;
+  const body = document.getElementById('productModalBody');
+  const footer = document.getElementById('productModalFooter');
+
+  let html = `
+    <div class="product-modal-img" style="background:${p.cat==='3d'?'#1a1611':p.cat==='tricot'?'#1a1118':'#111a16'};padding:0;overflow:hidden">
+      ${p.img
+        ? `<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : ''}
+      <span style="font-size:5rem;${p.img?'display:none;':'display:flex;'}width:100%;height:100%;align-items:center;justify-content:center">${p.icon}</span>
+    </div>
+    <div class="product-modal-body">
+      <div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:.3rem">${p.cat==='3d'?'Impression 3D':p.cat==='tricot'?'Tricot':'Sur Mesure'}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;margin-bottom:.35rem">${p.name}</div>
+      <div style="font-size:.87rem;color:var(--muted);line-height:1.65;margin-bottom:1.4rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">${p.desc}</div>
+  `;
+
+  // ── COULEUR ──
+  if(p.colors && p.colors.length){
+    html += `<div class="product-option-group">
+      <span class="option-label">Couleur${cfg.color ? ' <span style="color:var(--ink);font-weight:600;text-transform:none;letter-spacing:0">— '+cfg.color+'</span>' : ' <span style="color:#e74c3c;font-size:.7rem">*</span>'}</span>
+      <div class="color-swatches">
+        ${p.colors.map(c => {
+          const bg = COLOR_MAP[c]||'#ccc';
+          const isGrad = bg.includes('gradient');
+          return `<div class="color-swatch-wrap" onclick="currentProductConfig.color='${c}';renderProductModal(PRODUCTS.find(x=>x.id===${p.id}))">
+            <div class="color-swatch ${cfg.color===c?'selected':''}"
+              style="${isGrad?'background:'+bg:'background:'+bg};${cfg.color===c?'border-color:var(--gold)':'border-color:rgba(0,0,0,0.12)'}">
+            </div>
+            <span class="color-swatch-label" title="${c}">${c}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ── MATIERE ──
+  if(p.materials && p.materials.length > 1){
+    html += `<div class="product-option-group">
+      <span class="option-label">Matiere</span>
+      <div class="material-btns">
+        ${p.materials.map(m=>`
+          <button class="material-btn ${cfg.material===m?'selected':''}" onclick="currentProductConfig.material='${m}';renderProductModal(PRODUCTS.find(x=>x.id===${p.id}))">${m}</button>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ── TAILLE BONNET (XS/S/M/L/XL + champ libre) ──
+  if(p.sizeType==='bonnet'){
+    const standardSizes = ['Enfant (2-4 ans)','Enfant (5-8 ans)','Enfant (9-12 ans)','Adulte S','Adulte M','Adulte L'];
+    html += `<div class="product-option-group">
+      <span class="option-label">Taille${cfg.size?'':' <span style="color:#e74c3c;font-size:.7rem">*</span>'}</span>
+      <div class="size-btns" style="flex-wrap:wrap">
+        ${standardSizes.map(s=>`
+          <button class="size-btn ${cfg.size===s?'selected':''}"
+            onclick="currentProductConfig.size='${s}';document.getElementById('sizeInputBonnet').value='';renderProductModal(PRODUCTS.find(x=>x.id===${p.id}))"
+            style="font-size:.72rem;padding:.35rem .7rem">${s}</button>
+        `).join('')}
+      </div>
+      <div style="margin-top:.7rem">
+        <span style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.3rem">Ou tour de tete en cm :</span>
+        <input id="sizeInputBonnet" class="form-input" type="text" placeholder="Ex: 56cm"
+          value="${cfg.size && !standardSizes.includes(cfg.size) ? cfg.size : ''}"
+          oninput="currentProductConfig.size=this.value"
+          style="background:#fff;border-color:var(--border);color:var(--ink);max-width:150px">
+      </div>
+    </div>`;
+  }
+
+  // ── TAILLE SNOOD (adulte / enfant) ──
+  if(p.sizeType==='snood'){
+    html += `<div class="product-option-group">
+      <span class="option-label">Taille${cfg.size?'':' <span style="color:#e74c3c;font-size:.7rem">*</span>'}</span>
+      <div class="size-btns">
+        ${['Enfant','Adulte S/M','Adulte L/XL'].map(s=>`
+          <button class="size-btn ${cfg.size===s?'selected':''}" onclick="currentProductConfig.size='${s}';renderProductModal(PRODUCTS.find(x=>x.id===${p.id}))">${s}</button>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ── POINTURE ──
+  if(p.sizeType==='pointure'){
+    html += `<div class="product-option-group">
+      <span class="option-label">Pointure <span style="color:#e74c3c;font-size:.7rem">*</span></span>
+      <input class="form-input" type="text" placeholder="Ex: 42"
+        value="${cfg.size||''}"
+        oninput="currentProductConfig.size=this.value"
+        style="background:#fff;border-color:var(--border);color:var(--ink);max-width:120px">
+    </div>`;
+  }
+
+  // ── MENSURATIONS VETEMENT ──
+  if(p.sizeType==='vetement'){
+    const mesFields = [
+      ['poitrine','Tour de poitrine'],
+      ['taille','Tour de taille'],
+      ['hanches','Tour de hanches'],
+      ['dos','Longueur dos'],
+      ['manches','Longueur manches'],
+      ['cou','Tour de cou']
+    ];
+    html += `<div class="product-option-group">
+      <span class="option-label">Mensurations (en cm)</span>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:.7rem;line-height:1.5">Remplissez ce que vous connaissez. Si vous ne savez pas, choisissez une taille de reference ci-dessous.</p>
+      <div class="mesures-grid">
+        ${mesFields.map(([key,label])=>`
+          <div class="mesure-field">
+            <label>${label}</label>
+            <input class="form-input" type="number" min="1" placeholder="cm"
+              value="${cfg.mesures[key]||''}"
+              oninput="currentProductConfig.mesures['${key}']=this.value"
+              style="background:#fff;border-color:var(--border);color:var(--ink);padding:.35rem .6rem">
+          </div>
+        `).join('')}
+      </div>
+      <div style="margin-top:1rem">
+        <span style="font-size:.75rem;color:var(--muted);display:block;margin-bottom:.5rem">Ou taille de reference :</span>
+        <div class="size-btns">
+          ${['XS','S','M','L','XL','XXL'].map(s=>`
+            <button class="size-btn ${cfg.size===s?'selected':''}" onclick="currentProductConfig.size='${s}';renderProductModal(PRODUCTS.find(x=>x.id===${p.id}))">${s}</button>
+          `).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── QUANTITE ──
+  html += `
+    <div class="product-option-group" style="display:flex;align-items:center;justify-content:space-between">
+      <span class="option-label" style="margin-bottom:0">Quantite</span>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="currentProductConfig.qty=Math.max(1,currentProductConfig.qty-1);renderProductModal(PRODUCTS.find(x=>x.id===${p.id}))">−</button>
+        <span class="qty-val">${cfg.qty}</span>
+        <button class="qty-btn" onclick="currentProductConfig.qty++;renderProductModal(PRODUCTS.find(x=>x.id===${p.id}))">+</button>
+      </div>
+    </div>
+  `;
+
+  // ── NOTES ──
+  html += `
+    <div class="product-option-group">
+      <span class="option-label">Notes / Precisions (optionnel)</span>
+      <textarea class="form-textarea" placeholder="Ex: finition mate, fichier joint par mail, delai souhaite..."
+        oninput="currentProductConfig.note=this.value"
+        style="background:#fff;border-color:var(--border);color:var(--ink);min-height:65px">${cfg.note||''}</textarea>
+    </div>
+  </div>`;
+
+  body.innerHTML = html;
+
+  const total = (p.price||0) * cfg.qty;
+  footer.innerHTML = `
+    <div style="font-size:.85rem;color:var(--muted)">Total : <strong style="color:var(--gold);font-size:1.05rem">CHF ${total.toFixed(2)}</strong></div>
+    <div style="display:flex;gap:.5rem">
+      <button class="btn-sm btn-ghost" onclick="closeModal('productModal')">Annuler</button>
+      <button class="btn-sm btn-gold" onclick="addToCartFromModal()">Ajouter au panier &rarr;</button>
+    </div>
+  `;
+}
+
+function addToCartFromModal(){
+  const cfg = currentProductConfig;
+  const p = PRODUCTS.find(x=>x.id===cfg.id);
+  if(!p) return;
+  // Validate required fields
+  if(p.colors && p.colors.length && !cfg.color){
+    showToast('Veuillez choisir une couleur', 'error'); return;
+  }
+  if((p.sizeType==='bonnet'||p.sizeType==='snood'||p.sizeType==='pointure') && !cfg.size){
+    showToast('Veuillez indiquer une taille', 'error'); return;
+  }
+  cart.push({
+    ...p,
+    qty: cfg.qty,
+    customColor: cfg.color,
+    customMaterial: cfg.material || (p.materials[0]||''),
+    customSize: cfg.size,
+    customMesures: {...cfg.mesures},
+    customNote: cfg.note
+  });
+  updateCartCount();
+  closeModal('productModal');
+  showToast('"'+p.name+'" ajoute au panier !', 'success');
+}
+
+// ── CART ──
+function removeFromCart(idx){
+  cart.splice(idx,1);
+  updateCartCount();
+  renderCartModal();
+}
+
+function updateQty(idx, delta){
+  cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+  renderCartModal();
+}
+
+function updateCartCount(){
+  const count = cart.reduce((s,i)=>s+i.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+}
+
+function cartTotal(){
+  return cart.reduce((s,i) => s+(i.price||0)*i.qty, 0);
+}
+
+// ── MODALS ──
+function openModal(type, data={}){
+  if(type==='cart'){ currentStep=1; renderCartModal(); document.getElementById('cartModal').classList.remove('hidden'); return; }
+  if(type==='devis'){ document.getElementById('devisModal').classList.remove('hidden'); return; }
+}
+
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click', e => {
+    if(e.target === overlay) overlay.classList.add('hidden');
+  });
+});
+
+function openDevisForProduct(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  document.getElementById('devisModal').classList.remove('hidden');
+  if(p) document.getElementById('dvDesc').value = 'Demande de devis pour: '+p.name+'\n\n';
+}
+
+// ── CART MODAL ──
+function renderCartModal(){
+  const body = document.getElementById('cartModalBody');
+  const footer = document.getElementById('cartModalFooter');
+  document.getElementById('cartModalTitle').textContent = 'Mon Panier ('+cart.reduce((s,i)=>s+i.qty,0)+')';
+
+  if(cart.length===0){
+    body.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--muted)">
+      <div style="font-size:3rem;margin-bottom:1rem">🛒</div>
+      <p>Votre panier est vide.</p>
+      <p style="font-size:.85rem;margin-top:.5rem">Parcourez notre catalogue pour trouver votre bonheur !</p>
+    </div>`;
+    footer.innerHTML = `<button class="btn-sm btn-ghost" onclick="closeModal('cartModal')">Fermer</button><a href="#catalogue" class="btn-sm btn-gold" onclick="closeModal('cartModal')">Voir le catalogue</a>`;
+    return;
+  }
+
+  if(currentStep===1){
+    document.getElementById('cartModalTitle').textContent = 'Mon Panier';
+    body.innerHTML = cart.map((item,idx)=>{
+      const mesuresText = item.customMesures && Object.keys(item.customMesures).filter(k=>item.customMesures[k]).length
+        ? Object.entries(item.customMesures).filter(([k,v])=>v)
+            .map(([k,v])=>({poitrine:'Poitrine',taille:'Taille',hanches:'Hanches',dos:'Dos',manches:'Manches',cou:'Cou'})[k]+': '+v+'cm')
+            .join(' · ')
+        : '';
+      return `
+        <div class="cart-item-row">
+          <div class="cart-item-icon">${item.icon}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-qty" style="margin-top:.3rem">
+              <button class="qty-btn" onclick="updateQty(${idx},-1)">−</button>
+              <span>${item.qty}</span>
+              <button class="qty-btn" onclick="updateQty(${idx},+1)">+</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem">
+              ${item.customColor?`<span style="background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:.12rem .5rem;font-size:.72rem;font-weight:600">🎨 ${item.customColor}</span>`:''}
+              ${item.customMaterial?`<span style="background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:.12rem .5rem;font-size:.72rem;font-weight:600">🧶 ${item.customMaterial}</span>`:''}
+              ${item.customSize?`<span style="background:var(--cream);border:1px solid var(--border);border-radius:2px;padding:.12rem .5rem;font-size:.72rem;font-weight:600">📐 ${item.customSize}</span>`:''}
+            </div>
+            ${mesuresText?`<div style="font-size:.72rem;color:var(--muted);margin-top:.25rem">📏 ${mesuresText}</div>`:''}
+            ${item.customNote?`<div style="font-size:.72rem;color:var(--muted);margin-top:.2rem;font-style:italic">💬 ${item.customNote}</div>`:''}
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div class="cart-item-price">CHF ${((item.price||0)*item.qty).toFixed(2)}</div>
+            <button class="cart-item-remove" onclick="removeFromCart(${idx})">🗑</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    body.innerHTML += `<div class="order-total">
+      <span class="order-total-label">Total</span>
+      <span class="order-total-amount">CHF ${cartTotal().toFixed(2)}</span>
+    </div>`;
+    footer.innerHTML = `<button class="btn-sm btn-ghost" onclick="closeModal('cartModal')">Continuer</button><button class="btn-sm btn-gold" onclick="goStep(2)">Commander &rarr;</button>`;
+
+  } else if(currentStep===2){
+    document.getElementById('cartModalTitle').textContent = 'Vos coordonnees';
+    body.innerHTML = `
+      <div class="step-indicator">
+        <div class="step-ind-item done">1 Panier</div>
+        <div class="step-ind-item active">2 Coordonnees</div>
+        <div class="step-ind-item">3 Paiement</div>
+        <div class="step-ind-item">4 Confirmation</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Prenom *</label><input class="form-input" id="orPrenom" value="${orderData.prenom||''}" placeholder="Marie" style="background:#fff;border-color:var(--border);color:var(--ink)" oninput="orderData.prenom=this.value"></div>
+        <div class="form-group"><label class="form-label">Nom *</label><input class="form-input" id="orNom" value="${orderData.nom||''}" placeholder="Dupont" style="background:#fff;border-color:var(--border);color:var(--ink)" oninput="orderData.nom=this.value"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="orEmail" type="email" value="${orderData.email||''}" placeholder="marie@email.ch" style="background:#fff;border-color:var(--border);color:var(--ink)" oninput="orderData.email=this.value"></div>
+        <div class="form-group"><label class="form-label">Telephone</label><input class="form-input" id="orTel" value="${orderData.tel||''}" placeholder="+41 79 000 00 00" style="background:#fff;border-color:var(--border);color:var(--ink)" oninput="orderData.tel=this.value"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Adresse de livraison *</label><input class="form-input" id="orAdresse" value="${orderData.adresse||''}" placeholder="Rue de la Paix 12" style="background:#fff;border-color:var(--border);color:var(--ink)" oninput="orderData.adresse=this.value"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">NPA / Ville *</label><input class="form-input" id="orVille" value="${orderData.ville||''}" placeholder="1200 Geneve" style="background:#fff;border-color:var(--border);color:var(--ink)" oninput="orderData.ville=this.value"></div>
+        <div class="form-group"><label class="form-label">Mode de livraison</label>
+          <select class="form-select" id="orLivraison" style="background:#fff;border-color:var(--border);color:var(--ink)" onchange="orderData.livraison=this.value">
+            <option value="post" ${(orderData.livraison||'post')==='post'?'selected':''}>Poste suisse (CHF 7.90)</option>
+            <option value="express" ${orderData.livraison==='express'?'selected':''}>Express 48h (CHF 14.90)</option>
+            <option value="remise" ${orderData.livraison==='remise'?'selected':''}>Remise en main propre (Gratuit)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes supplementaires</label><textarea class="form-textarea" id="orNotes" placeholder="Instructions particulieres..." style="background:#fff;border-color:var(--border);color:var(--ink);min-height:70px" oninput="orderData.notes=this.value">${orderData.notes||''}</textarea></div>
+    `;
+    footer.innerHTML = `<button class="btn-sm btn-ghost" onclick="goStep(1)">&larr; Retour</button><button class="btn-sm btn-gold" onclick="goStep(3)">Continuer &rarr;</button>`;
+
+  } else if(currentStep===3){
+    const livFee = {post:7.90,express:14.90,remise:0}[orderData.livraison||'post']||7.90;
+    const total = cartTotal() + livFee;
+    document.getElementById('cartModalTitle').textContent = 'Mode de paiement';
+    body.innerHTML = `
+      <div class="step-indicator">
+        <div class="step-ind-item done">1 Panier</div>
+        <div class="step-ind-item done">2 Coordonnees</div>
+        <div class="step-ind-item active">3 Paiement</div>
+        <div class="step-ind-item">4 Confirmation</div>
+      </div>
+      <div class="confirm-details" style="margin-bottom:1.5rem">
+        ${cart.map(i=>`<div class="confirm-row">
+          <span class="confirm-row-label">${i.qty}x ${i.name}${i.customColor?' ('+i.customColor+')':''}${i.customSize?' - T.'+i.customSize:''}</span>
+          <span class="confirm-row-val">CHF ${((i.price||0)*i.qty).toFixed(2)}</span>
+        </div>`).join('')}
+        <div class="confirm-row"><span class="confirm-row-label">Livraison</span><span class="confirm-row-val">CHF ${livFee.toFixed(2)}</span></div>
+        <div class="confirm-row" style="font-weight:700"><span>Total</span><span style="color:var(--gold);font-size:1.1rem">CHF ${total.toFixed(2)}</span></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mode de paiement *</label>
+        <div class="payment-options">
+          ${[{v:'twint',icon:'📱',lbl:'Twint'},{v:'cash',icon:'💵',lbl:'Cash'},{v:'virement',icon:'🏦',lbl:'Virement'}].map(opt=>`
+            <label class="payment-option ${(orderData.payment||'twint')===opt.v?'selected':''}">
+              <input type="radio" name="payment" value="${opt.v}" ${(orderData.payment||'twint')===opt.v?'checked':''} onchange="orderData.payment=this.value;renderCartModal()">
+              <span class="payment-icon">${opt.icon}</span>
+              <span class="payment-label" style="color:var(--muted)">${opt.lbl}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+      ${(orderData.payment||'twint')==='twint'?`<div class="payment-info-box"><h4>Twint</h4><p>Un QR code vous sera envoye dans la confirmation. Numero: <strong>${CONFIG.twintPhone}</strong></p></div>`:''}
+      ${orderData.payment==='cash'?`<div class="payment-info-box"><h4>Paiement en especes</h4><p>Le paiement s'effectue lors de la remise en main propre.</p></div>`:''}
+      ${orderData.payment==='virement'?`<div class="payment-info-box"><h4>Virement bancaire</h4><p>IBAN: <strong>${CONFIG.iban}</strong><br>Reference: votre numero de commande sera indique dans la confirmation.</p></div>`:''}
+    `;
+    footer.innerHTML = `<button class="btn-sm btn-ghost" onclick="goStep(2)">&larr; Retour</button><button class="btn-sm btn-gold" id="submitOrderBtn" onclick="submitOrder()">Confirmer la commande &rarr;</button>`;
+  }
+}
+
+function goStep(step){
+  if(step===3){
+    const prenom = document.getElementById('orPrenom')?.value||orderData.prenom||'';
+    const nom    = document.getElementById('orNom')?.value||orderData.nom||'';
+    const email  = document.getElementById('orEmail')?.value||orderData.email||'';
+    const adresse= document.getElementById('orAdresse')?.value||orderData.adresse||'';
+    const ville  = document.getElementById('orVille')?.value||orderData.ville||'';
+    if(!prenom||!nom||!email||!adresse||!ville){ showToast('Veuillez remplir tous les champs *','error'); return; }
+    if(!validateEmail(email)){ showToast('Email invalide','error'); return; }
+    orderData = {...orderData, prenom, nom, email, adresse, ville,
+      tel: document.getElementById('orTel')?.value||orderData.tel||'',
+      livraison: document.getElementById('orLivraison')?.value||orderData.livraison||'post',
+      notes: document.getElementById('orNotes')?.value||orderData.notes||''
+    };
+  }
+  currentStep = step;
+  renderCartModal();
+}
+
+// ── SUBMIT ORDER ──
+async function submitOrder(){
+  const ref = generateRef();
+  const livFee = {post:7.90,express:14.90,remise:0}[orderData.livraison||'post']||7.90;
+  const subtotal = cartTotal();
+  const total = subtotal + livFee;
+
+  const btn = document.getElementById('submitOrderBtn');
+  btn.innerHTML = '<span class="spinner"></span> Traitement...';
+  btn.disabled = true;
+
+  lastConfirmation = {
+    ref, date: new Date().toLocaleDateString('fr-CH'),
+    client: orderData, items: [...cart],
+    subtotal, livFee, tvaAmt: 0, total,
+    payment: orderData.payment||'twint', type: 'order'
+  };
+
+  await sendOrderEmails(lastConfirmation);
+
+  cart = [];
+  currentStep = 1;
+  updateCartCount();
+  closeModal('cartModal');
+  showConfirmation(lastConfirmation);
+}
+
+// ── FILE HANDLING ──
+function handleFileSelect(input, zoneId, nameId){
+  const file = input.files[0];
+  if(!file) return;
+  document.getElementById(zoneId).style.borderColor = 'var(--gold)';
+  const el = document.getElementById(nameId);
+  el.textContent = '📎 ' + file.name;
+  el.classList.remove('hidden');
+}
+
+// ── DEVIS SUBMIT ──
+async function submitDevis(){
+  const prenom = document.getElementById('dvPrenom').value.trim();
+  const nom    = document.getElementById('dvNom').value.trim();
+  const email  = document.getElementById('dvEmail').value.trim();
+  const type   = document.getElementById('dvType').value;
+  const desc   = document.getElementById('dvDesc').value.trim();
+  if(!prenom||!nom||!email||!type||!desc){ showToast('Veuillez remplir tous les champs *','error'); return; }
+  if(!validateEmail(email)){ showToast('Email invalide','error'); return; }
+  const btn = document.getElementById('dvSubmitBtn');
+  btn.innerHTML = '<span class="spinner"></span> Envoi...';
+  btn.disabled = true;
+  const ref = generateRef('DV');
+  await sendDevisEmails({
+    ref, client:{prenom,nom,email,tel:document.getElementById('dvTel').value},
+    projectType: type,
+    matiere: document.getElementById('dvMatiere').value,
+    qty: document.getElementById('dvQty').value,
+    delai: document.getElementById('dvDelai').value,
+    desc
+  });
+  closeModal('devisModal');
+  showToast('Demande envoyee ! Reference: '+ref, 'success');
+  btn.innerHTML = 'Envoyer la demande &rarr;';
+  btn.disabled = false;
+}
+
+async function submitQuickDevis(){
+  const nom   = document.getElementById('smNom').value.trim();
+  const email = document.getElementById('smEmail').value.trim();
+  const type  = document.getElementById('smType').value;
+  const desc  = document.getElementById('smDesc').value.trim();
+  if(!nom||!email||!desc){ showToast('Prenom, email et description requis','error'); return; }
+  if(!validateEmail(email)){ showToast('Email invalide','error'); return; }
+  const ref = generateRef('QD');
+  await sendDevisEmails({ ref, client:{prenom:nom,nom:'',email}, projectType:type, desc });
+  document.getElementById('smNom').value='';
+  document.getElementById('smEmail').value='';
+  document.getElementById('smType').value='';
+  document.getElementById('smDesc').value='';
+  showToast('Demande envoyee ! Reponse sous 24h.', 'success');
+}
+
+async function sendContactForm(){
+  const nom  = document.getElementById('ctNom').value.trim();
+  const email= document.getElementById('ctEmail').value.trim();
+  const msg  = document.getElementById('ctMsg').value.trim();
+  if(!nom||!email||!msg){ showToast('Tous les champs sont requis','error'); return; }
+  if(!validateEmail(email)){ showToast('Email invalide','error'); return; }
+  try{
+    await emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateOwner, {
+      to_email: CONFIG.ownerEmail,
+      email: CONFIG.ownerEmail,
+      order_ref: 'CONTACT',
+      order_date: new Date().toLocaleDateString('fr-CH'),
+      client_name: nom,
+      client_email: email,
+      client_address: '-',
+      items_list: msg,
+      subtotal: '-', shipping: '-', total: '-',
+      payment_method: '-', payment_detail: '-',
+      shop_name: CONFIG.shopName,
+      notes: 'Contact direct de '+nom+' ('+email+')'
+    });
+    document.getElementById('ctNom').value='';
+    document.getElementById('ctEmail').value='';
+    document.getElementById('ctMsg').value='';
+    showToast('Message envoye ! Reponse sous 24h.','success');
+  }catch(e){
+    console.error('Contact error:', e);
+    showToast('Erreur envoi. Contactez-nous directement.','error');
+  }
+}
+
+// ── EMAILS ──
+function buildItemsList(items){
+  return items.map(i => {
+    let line = i.qty+'x '+i.name;
+    const details = [];
+    if(i.customColor)    details.push('Couleur: '+i.customColor);
+    if(i.customMaterial) details.push('Matiere: '+i.customMaterial);
+    if(i.customSize)     details.push('Taille: '+i.customSize);
+    if(i.customMesures && Object.keys(i.customMesures).length){
+      const ml={poitrine:'Poitrine',taille:'Taille',hanches:'Hanches',dos:'Dos',manches:'Manches',cou:'Cou'};
+      const ms=Object.entries(i.customMesures).filter(([k,v])=>v).map(([k,v])=>ml[k]+': '+v+'cm').join(', ');
+      if(ms) details.push('Mensurations: '+ms);
+    }
+    if(i.customNote) details.push('Note: '+i.customNote);
+    if(details.length) line += '\n   > '+details.join(' | ');
+    line += '\n   CHF '+((i.price||0)*i.qty).toFixed(2);
+    return line;
+  }).join('\n\n');
+}
+
+async function sendOrderEmails(data){
+  const base = {
+    order_ref:      data.ref,
+    order_date:     data.date,
+    client_name:    data.client.prenom+' '+data.client.nom,
+    client_email:   data.client.email,
+    client_address: (data.client.adresse||'')+', '+(data.client.ville||''),
+    items_list:     buildItemsList(data.items),
+    subtotal:       'CHF '+data.subtotal.toFixed(2),
+    shipping:       'CHF '+data.livFee.toFixed(2),
+    total:          'CHF '+data.total.toFixed(2),
+    payment_method: {twint:'Twint',cash:'Cash / Especes',virement:'Virement bancaire'}[data.payment]||'',
+    payment_detail: data.payment==='twint'
+      ? 'Twint: '+CONFIG.twintPhone
+      : data.payment==='virement'
+      ? 'IBAN: '+CONFIG.iban+' - Ref: '+data.ref
+      : 'Paiement lors de la remise',
+    shop_name:      CONFIG.shopName,
+    notes:          data.client.notes||'-'
+  };
+
+  // ── Email au OWNER ──
+  try{
+    console.log('[EMAIL] Envoi owner vers:', CONFIG.ownerEmail);
+    await emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateOwner, {
+      ...base,
+      to_email:    CONFIG.ownerEmail,
+      email:       CONFIG.ownerEmail,
+      client_email:CONFIG.ownerEmail,
+      reply_to:    data.client.email
+    });
+    console.log('[EMAIL] Owner OK');
+  }catch(e){
+    console.error('[EMAIL] Owner ERREUR:', e.status, e.text||JSON.stringify(e));
+  }
+
+  // ── Email au CLIENT ──
+  try{
+    console.log('[EMAIL] Envoi client vers:', data.client.email);
+    await emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateClient, {
+      ...base,
+      to_email:    data.client.email,
+      email:       data.client.email,
+      client_email:data.client.email,
+      reply_to:    CONFIG.ownerEmail
+    });
+    console.log('[EMAIL] Client OK');
+  }catch(e){
+    console.error('[EMAIL] Client ERREUR:', e.status, e.text||JSON.stringify(e));
+    showToast('Erreur email client: '+(e.text||e.message||e.status||JSON.stringify(e)),'error');
+  }
+}
+
+async function sendDevisEmails(data){
+  try{
+    const base = {
+      order_ref:      data.ref,
+      order_date:     new Date().toLocaleDateString('fr-CH'),
+      client_name:    (data.client.prenom||'')+' '+(data.client.nom||''),
+      client_email:   data.client.email,
+      client_address: '-',
+      items_list:     'Demande de devis - '+(data.projectType||'Projet'),
+      subtotal:       'Sur devis', shipping: '-', total: 'Sur devis',
+      payment_method: '-', payment_detail: '-',
+      shop_name:      CONFIG.shopName,
+      notes:          'Type: '+(data.projectType||'-')+'\nDescription: '+(data.desc||'-'),
+      reply_to:       data.client.email
+    };
+    await emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateOwner, {
+      ...base, to_email: CONFIG.ownerEmail, email: CONFIG.ownerEmail
+    });
+    await emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateClient, {
+      ...base,
+      to_email:   data.client.email,
+      email:      data.client.email,
+      reply_to:   CONFIG.ownerEmail,
+      items_list: 'Votre demande a bien ete recue.\nType: '+(data.projectType||'-')+'\nDetail: '+(data.desc||'-')+'\n\nNous vous repondons sous 24h avec un devis.'
+    });
+  }catch(e){
+    console.error('Devis email error:', e.status, e.text||JSON.stringify(e));
+    showToast('Erreur email: '+(e.text||e.message||e.status||'inconnue'),'error');
+  }
+}
+
+// ── CONFIRMATION ──
+function showConfirmation(data){
+  const modal  = document.getElementById('confirmModal');
+  const body   = document.getElementById('confirmBody');
+  const footer = document.getElementById('confirmFooter');
+  modal.classList.remove('hidden');
+
+  const paymentInfo = {
+    twint:    `<div class="payment-info-box"><h4>Paiement par Twint</h4><p>Scannez le QR code ou envoyez a <strong>${CONFIG.twintPhone}</strong><br>Montant: <strong>CHF ${data.total.toFixed(2)}</strong> - Ref: <strong>${data.ref}</strong></p></div>`,
+    cash:     `<div class="payment-info-box"><h4>Paiement en especes</h4><p>Montant: <strong>CHF ${data.total.toFixed(2)}</strong><br>Paiement lors de la remise ou livraison.</p></div>`,
+    virement: `<div class="payment-info-box"><h4>Virement bancaire</h4><p>IBAN: <strong>${CONFIG.iban}</strong><br>Montant: <strong>CHF ${data.total.toFixed(2)}</strong><br>Reference obligatoire: <strong>${data.ref}</strong></p></div>`
+  }[data.payment];
+
+  body.innerHTML = `
+    <div class="confirm-header">
+      <div class="confirm-check">✓</div>
+      <div class="confirm-title">Commande confirmee !</div>
+      <div class="confirm-ref">Reference: <span>${data.ref}</span> · ${data.date}</div>
+    </div>
+    <p style="text-align:center;font-size:.85rem;color:var(--muted);margin-bottom:1.5rem">Un email a ete envoye a <strong>${data.client.email}</strong></p>
+    <div class="confirm-details">
+      ${data.items.map(i=>`<div class="confirm-row">
+        <span class="confirm-row-label">${i.qty}x ${i.name}${i.customColor?' ('+i.customColor+')':''}${i.customSize?' T.'+i.customSize:''}</span>
+        <span class="confirm-row-val">CHF ${((i.price||0)*i.qty).toFixed(2)}</span>
+      </div>`).join('')}
+      <div class="confirm-row"><span class="confirm-row-label">Livraison</span><span class="confirm-row-val">CHF ${data.livFee.toFixed(2)}</span></div>
+      <div class="confirm-row"><span class="confirm-row-label" style="font-weight:700">TOTAL</span><span class="confirm-row-val" style="color:var(--gold);font-weight:700;font-size:1.1rem">CHF ${data.total.toFixed(2)}</span></div>
+    </div>
+    ${paymentInfo}
+    ${data.payment==='twint'?`<div id="qr-container"></div>`:''}
+  `;
+
+  if(data.payment==='twint'){
+    setTimeout(()=>{
+      new QRCode(document.getElementById('qr-container'), {
+        text: CONFIG.twintPhone, width:160, height:160,
+        colorDark:'#0E0E0E', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.L
+      });
+    }, 100);
+  }
+
+  footer.innerHTML = `
+    <button class="btn-sm btn-ghost" onclick="closeModal('confirmModal')">Fermer</button>
+    <button class="btn-sm btn-success" onclick="downloadPDF()">Telecharger la facture PDF</button>
+  `;
+}
+
+// ── PDF ──
+async function downloadPDF(){
+  if(!lastConfirmation){ showToast('Aucune commande a exporter','error'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'mm', format:'a4' });
+  const d = lastConfirmation;
+  const pageW=210, margin=18, right=pageW-margin, colW=pageW-margin*2;
+  const gold=[192,154,46], ink=[14,14,14], muted=[130,120,100], cream=[247,243,238];
+  const lightbg=[252,250,247], bordercol=[220,213,200];
+
+  // HEADER
+  doc.setFillColor(...ink); doc.rect(0,0,210,42,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...cream);
+  doc.text('M.A Creation', margin, 18);
+  doc.setDrawColor(...gold); doc.setLineWidth(0.7); doc.line(margin,22,margin+44,22);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...gold);
+  doc.text('Impression 3D  Tricot Artisanal  Sur Mesure', margin, 30);
+  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...gold);
+  doc.text('FACTURE', right, 18, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(200,190,165);
+  doc.text(CONFIG.ownerEmail, right, 26, {align:'right'});
+  doc.text(CONFIG.twintPhone+'  |  Suisse', right, 33, {align:'right'});
+
+  // REF BOX
+  const refY=48;
+  doc.setFillColor(...lightbg); doc.setDrawColor(...bordercol); doc.setLineWidth(0.3);
+  doc.roundedRect(margin,refY,colW,22,2,2,'FD');
+  doc.setFillColor(...gold); doc.rect(margin,refY,2.5,22,'F');
+  const rcols=[margin+6,margin+50,margin+100,margin+150];
+  ['REFERENCE','DATE','CLIENT','PAIEMENT'].forEach((l,i)=>{
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...muted); doc.text(l,rcols[i],refY+7);
+  });
+  const rvals=[(d.ref||''),(d.date||''),((d.client.prenom||'')+' '+(d.client.nom||'')).substring(0,20),({twint:'Twint',cash:'Cash',virement:'Virement'}[d.payment]||'')];
+  rvals.forEach((v,i)=>{
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...ink); doc.text(v,rcols[i],refY+16);
+  });
+
+  // CLIENT
+  let y=refY+30;
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...muted); doc.text('FACTURE A',margin,y);
+  const clientLines=[(d.client.prenom||'')+' '+(d.client.nom||''), d.client.adresse||'', d.client.ville||'', d.client.email||'', d.client.tel||''].filter(l=>l.trim());
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...ink);
+  clientLines.forEach((line,i)=>doc.text(line,margin,y+6+i*6));
+
+  // TABLE
+  y=refY+30+6+clientLines.length*6+8;
+  doc.setFillColor(...ink); doc.rect(margin,y,colW,8,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...cream);
+  doc.text('ARTICLE',margin+4,y+5.5);
+  doc.text('QTE',margin+110,y+5.5,{align:'right'});
+  doc.text('PRIX UNIT.',margin+138,y+5.5,{align:'right'});
+  doc.text('TOTAL',right-2,y+5.5,{align:'right'});
+  y+=10;
+  d.items.forEach((item,i)=>{
+    if(i%2===0){doc.setFillColor(...lightbg); doc.rect(margin,y-4,colW,9,'F');}
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...ink);
+    const name=(item.name+(item.customColor?' ('+item.customColor+')':'')+(item.customMaterial?' / '+item.customMaterial:'')+(item.customSize?' T.'+item.customSize:'')).substring(0,50);
+    doc.text(name,margin+4,y+1);
+    doc.text(String(item.qty),margin+110,y+1,{align:'right'});
+    doc.text(item.price?'CHF '+item.price.toFixed(2):'--',margin+138,y+1,{align:'right'});
+    doc.text(item.price?'CHF '+(item.price*item.qty).toFixed(2):'--',right-2,y+1,{align:'right'});
+    if(item.customMesures && Object.keys(item.customMesures).length){
+      const ml={poitrine:'Poitrine',taille:'Taille',hanches:'Hanches',dos:'Dos',manches:'Manches',cou:'Cou'};
+      const ms=Object.entries(item.customMesures).filter(([k,v])=>v).map(([k,v])=>ml[k]+':'+v+'cm').join('  ');
+      if(ms){y+=5; doc.setFontSize(7); doc.setTextColor(...muted); doc.text('  Mensurations: '+ms.substring(0,70),margin+4,y+1);}
+    }
+    if(item.customNote&&item.customNote.trim()){y+=5; doc.setFontSize(7); doc.setTextColor(...muted); doc.text('  Note: '+item.customNote.substring(0,60),margin+4,y+1);}
+    y+=9;
+  });
+
+  // TOTALS
+  y+=4; doc.setDrawColor(...bordercol); doc.setLineWidth(0.3); doc.line(margin+90,y,right,y); y+=5;
+  const addRow=(label,val,bold=false)=>{
+    doc.setFont('helvetica',bold?'bold':'normal'); doc.setFontSize(bold?10:8.5);
+    doc.setTextColor(...(bold?ink:muted));
+    doc.text(label,margin+92,y); doc.text(val,right-2,y,{align:'right'}); y+=bold?9:6;
+  };
+  addRow('Sous-total','CHF '+d.subtotal.toFixed(2));
+  addRow('Livraison','CHF '+d.livFee.toFixed(2));
+  doc.setDrawColor(...gold); doc.setLineWidth(0.8); doc.line(margin+90,y-1,right,y-1); y+=3;
+  addRow('TOTAL DU','CHF '+d.total.toFixed(2),true);
+
+  // PAYMENT BOX
+  y+=6;
+  doc.setFillColor(...lightbg); doc.setDrawColor(...bordercol); doc.setLineWidth(0.3);
+  doc.roundedRect(margin,y,colW,46,2,2,'FD');
+  doc.setFillColor(...gold); doc.rect(margin,y,2.5,46,'F');
+  const px=margin+8, py=y+8;
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...muted);
+  doc.text('INFORMATIONS DE PAIEMENT',px,py);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...ink);
+  const payLabels={twint:'Paiement par Twint',cash:'Paiement en especes',virement:'Virement bancaire'};
+  doc.text(payLabels[d.payment]||'',px,py+8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+  if(d.payment==='twint'){
+    [['Numero:',CONFIG.twintPhone],['Montant:','CHF '+d.total.toFixed(2)],['Reference:',d.ref]].forEach(([l,v],i)=>{
+      doc.setTextColor(...muted); doc.text(l,px,py+17+i*7);
+      doc.setTextColor(l==='Montant:'?gold:ink); doc.text(v,px+28,py+17+i*7);
+    });
+  } else if(d.payment==='virement'){
+    [['IBAN:',CONFIG.iban],['Beneficiaire:',CONFIG.shopName],['Reference:',d.ref]].forEach(([l,v],i)=>{
+      doc.setTextColor(...muted); doc.text(l,px,py+17+i*7);
+      doc.setTextColor(...ink); doc.text(v,px+32,py+17+i*7);
+    });
+  } else {
+    doc.setTextColor(...muted); doc.text('Paiement a la remise ou a la livraison.',px,py+17);
+    doc.setTextColor(...gold); doc.text('CHF '+d.total.toFixed(2),px,py+24);
+  }
+
+  // QR
+  const qrCanvas=document.createElement('canvas'); qrCanvas.style.display='none'; document.body.appendChild(qrCanvas);
+  const qrText=d.payment==='twint'?CONFIG.twintPhone:d.payment==='virement'?CONFIG.iban.replace(/\s/g,''):d.ref;
+  new QRCode(qrCanvas,{text:qrText,width:110,height:110,colorDark:'#0E0E0E',colorLight:'#FAFAF8',correctLevel:QRCode.CorrectLevel.L});
+  await new Promise(res=>setTimeout(res,300));
+  const qrImg=qrCanvas.querySelector('canvas');
+  if(qrImg){try{doc.addImage(qrImg.toDataURL('image/png'),'PNG',right-38,y+5,36,36);}catch(e){}}
+  document.body.removeChild(qrCanvas);
+
+  // FOOTER
+  doc.setFillColor(...ink); doc.rect(0,277,210,20,'F');
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,170,155);
+  doc.text(CONFIG.shopName+' - '+CONFIG.ownerEmail+' - '+CONFIG.twintPhone, 105, 285, {align:'center'});
+  doc.text('Merci pour votre confiance !', 105, 292, {align:'center'});
+  doc.save('Facture_'+d.ref+'.pdf');
+  showToast('Facture telechargee !','success');
+}
+
+// ── UTILITIES ──
+function generateRef(prefix='MA'){
+  const d=new Date();
+  const date=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  return prefix+'-'+date+'-'+Math.floor(1000+Math.random()*9000);
+}
+
+function validateEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+
+function showToast(msg, type='success'){
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(100%)'; t.style.transition='.4s'; setTimeout(()=>t.remove(),400); },3500);
+}
+</script>
+</body>
+</html>
