@@ -1720,7 +1720,16 @@ async function downloadPDF(){
   doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,170,155);
   doc.text(CONFIG.shopName+' - '+CONFIG.ownerEmail+' - '+CONFIG.twintPhone, 105, 285, {align:'center'});
   doc.text('Merci pour votre confiance !', 105, 292, {align:'center'});
-  doc.save('Facture_'+d.ref+'.pdf');
+  // Mobile (iOS/Safari) ne supporte pas doc.save() → ouvrir dans nouvel onglet
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(isMobile){
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(()=>URL.revokeObjectURL(url), 10000);
+  } else {
+    doc.save('Facture_'+d.ref+'.pdf');
+  }
   showToast('Facture telechargee !','success');
 }
 
